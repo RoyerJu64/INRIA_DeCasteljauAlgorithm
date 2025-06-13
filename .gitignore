@@ -1,0 +1,13 @@
+# Empêche Git de suivre le dossier de build
+/build/
+
+# Fichiers générés par CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Fichiers objets et exécutables
+*.o
+*.exe
+*.out
