@@ -194,7 +194,7 @@ double Pyramide::compute_Mijklmn(int i, int j, int k, int l, int m, int n, int N
                 double wc = c_wts[qc];
                 double Bk_c = bernstein(k, N, c); // B_k^N(c)
                 double Bn_c = bernstein(n, N, c); // B_n^N(c)
-
+                
                 M += wa * wb * wc *
                      Bi_a * Bl_a *
                      Bj_b * Bm_b *
@@ -203,8 +203,7 @@ double Pyramide::compute_Mijklmn(int i, int j, int k, int l, int m, int n, int N
             }
         }
     }
-
-    return M;
+    return M ;
 }
 
 Eigen::MatrixXd Pyramide::calculerMatriceMasse()

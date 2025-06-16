@@ -17,7 +17,7 @@ include_directories(
 )
 
 # Déclare l'exécutable
-add_executable(DeCasteljauAlgorithm main.cpp src/Pyramide.cpp)
+add_executable(DeCasteljauAlgorithm main.cpp src/Pyramide.cpp src/tests.cpp)
 
 # Lie Eigen3 (pas besoin pour Boost)
 target_link_libraries(DeCasteljauAlgorithm Eigen3::Eigen)
