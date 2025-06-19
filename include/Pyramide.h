@@ -21,8 +21,10 @@ public:
     void genererTripletToIndex();
 
     double bernstein(int i, int n, double t);
+    double dBernstein(int i, int n, double t);
     std::vector<double> baseBernsteinCube(double x, double y, double z);
     std::vector<double> baseBernsteinPyramide(double x, double y, double z);
+    Eigen::Vector3d gradientBernsteinPyramid(int i, int j, int k, double a, double b, double c);
 
     double J(double a, double b);
 
@@ -32,9 +34,13 @@ public:
 
     // Evaluation of M_{ijk,lmn}
     double compute_Mijklmn(int i, int j, int k, int l, int m, int n, int N, int Q);
+    // Evaluation of K_{ijk,lmn}
+    double compute_Kijklmn(int i, int j, int k, int l, int m, int n, int N, int Q);
 
     // Calcul de la matrice de masse
     Eigen::MatrixXd calculerMatriceMasse();
+    // Calcul de la matrice de raideur
+    Eigen::MatrixXd calculerMatriceRaideur();
 
     std::vector<std::tuple<double, double, double>> getNoeuds();
     std::vector<std::tuple<int, int, int>> getTriplets();

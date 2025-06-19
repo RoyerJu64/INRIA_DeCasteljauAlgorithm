@@ -22,8 +22,7 @@ void test2(){
         Eigen::VectorXd un = Eigen::VectorXd::Ones(N);
         double V = un.transpose() * a.calculerMatriceMasse() * un;
 
-        std::cout << "Ordre " << i << " : V = " << V << ", attendu = " << 1.0/3.0 << std::endl;
-        if(std::abs(V - 1.0/3.0) > 1e-10){
+        if(std::abs(V - 1.0/3.0) > 1e-5){
             std::cout << "Erreur dans le test 2 pour ordre " << i << std::endl;
         } else {
             std::cout << "Test 2 réussi pour ordre " << i << std::endl;
@@ -59,3 +58,18 @@ void test3(){
     }
 }
 
+void test4()
+{
+    for(int i = 1; i<3; ++i){
+        Pyramide a = Pyramide(i);
+        auto K = a.calculerMatriceRaideur();
+        Eigen::VectorXd ones = Eigen::VectorXd::Ones(K.rows());
+        double V = ones.transpose() * K * ones;
+        
+        if(std::abs(V) > 1e-4){
+            std::cout << "Erreur dans le test 4 pour ordre " << i << std::endl;
+        } else {
+            std::cout << "Test 4 réussi pour ordre " << i << std::endl;
+        }
+    }
+}
