@@ -122,14 +122,15 @@ double Pyramide::dBernstein(int i, int n, double t) {
 std::vector<double> Pyramide::baseBernsteinCube(double x, double y, double z)
 {
     std::vector<double> values;
-    for (int k = 0; k <= ordre; ++k) {
-        int max_ij = ordre - k;
-        for (int i = 0; i <= max_ij; ++i) {
-            for (int j = 0; j <= max_ij; ++j) {
-                values.push_back(bernstein(i, ordre - k, x) * bernstein(j, ordre - k, y) * bernstein(k, ordre, z));
-            }
-        }
-    }
+    for (const auto& t : triplets) {
+    int i = std::get<0>(t);
+    int j = std::get<1>(t);
+    int k = std::get<2>(t);
+    int n = ordre - k;
+    values.push_back(
+        bernstein(i, n, x) * bernstein(j, n, y) * bernstein(k, ordre, z)
+    );
+}
     return values;
 }
 
@@ -296,48 +297,59 @@ double Pyramide::compute_Kijklmn(int i, int j, int k, int l, int m, int n, int N
 }
 
 Eigen::MatrixXd Pyramide::calculerMatriceMasse()
-{   
+{
     Eigen::MatrixXd M(nbNoeuds, nbNoeuds);
-    
-    for (int k = 0; k <= ordre + 1; k++) {
-        for (int n = 0; n < ordre + 1; n++) {
-            for (int i = 0; i < ordre - k + 1; i++) {
-                for (int j = 0; j < ordre - k + 1; j++) {
-                    for (int m = 0; m < ordre - n + 1; m++) {
-                        for (int l = 0; l < ordre - n + 1; l++) {
-                            M(tripletToIndex[std::make_tuple(i,j,k)],tripletToIndex[std::make_tuple(l,m,n)]) = compute_Mijklmn(i,j,k,l,m,n,ordre,4);
-                        }
-                    }
-                }
-            }
+
+    for (const auto& t1 : triplets) {
+        int i = std::get<0>(t1);
+        int j = std::get<1>(t1);
+        int k = std::get<2>(t1);
+        int idx1 = tripletToIndex.at(t1); // .at() pour plus de sécurité
+
+        for (const auto& t2 : triplets) {
+            int l = std::get<0>(t2);
+            int m = std::get<1>(t2);
+            int n = std::get<2>(t2);
+            int idx2 = tripletToIndex.at(t2);
+
+            double val = compute_Mijklmn(i, j, k, l, m, n, ordre, 4);
+
+            M(idx1, idx2) = val;
+            if (idx1 != idx2)
+                M(idx2, idx1) = val; // symétrie
         }
     }
+
     return M;
 }
+
 
 Eigen::MatrixXd Pyramide::calculerMatriceRaideur()
 {
     Eigen::MatrixXd K(nbNoeuds, nbNoeuds);
 
-    for (int k = 0; k <= ordre; ++k) {
-        for (int n = 0; n <= ordre; ++n) {
-            for (int i = 0; i <= ordre - k; ++i) {
-                for (int j = 0; j <= ordre - k; ++j) {
-                    for (int l = 0; l <= ordre - n; ++l) {
-                        for (int m = 0; m <= ordre - n; ++m) {
-                            int idx1 = tripletToIndex[std::make_tuple(i, j, k)];
-                            int idx2 = tripletToIndex[std::make_tuple(l, m, n)];
-                            K(idx1, idx2) = compute_Kijklmn(i, j, k, l, m, n, ordre, 4);
-                        }
-                    }
-                }
-            }
+    for (const auto& t1 : triplets) {
+        int i = std::get<0>(t1);
+        int j = std::get<1>(t1);
+        int k = std::get<2>(t1);
+        int idx1 = tripletToIndex.at(t1); // .at() pour plus de sécurité
+
+        for (const auto& t2 : triplets) {
+            int l = std::get<0>(t2);
+            int m = std::get<1>(t2);
+            int n = std::get<2>(t2);
+            int idx2 = tripletToIndex.at(t2);
+
+            double val = compute_Kijklmn(i, j, k, l, m, n, ordre, 4);
+
+            K(idx1, idx2) = val;
+            if (idx1 != idx2)
+                K(idx2, idx1) = val; // symétrie
         }
     }
 
     return K;
 }
-
 std::vector<std::tuple<double, double, double>> Pyramide::getNoeuds()
 {
     return noeuds;
